@@ -14,6 +14,7 @@ public class Room {
     ArrayList<Item> roomItems;
     ArrayList<IntrEnv> roomIntrEnv;
     ArrayList<Door> roomDoors;
+    ArrayList<Item> roomVisibleItems;
 
     public Room(String roomName, String roomDescription, String roomID, int roomGold) {
         this.roomName = roomName;
@@ -23,9 +24,14 @@ public class Room {
         this.roomItems = new ArrayList<Item>();
         this.roomIntrEnv = new ArrayList<IntrEnv>();
         this.roomDoors = new ArrayList<Door>();
+        this.roomVisibleItems = new ArrayList<Item>();
     }
 
-    // Getters
+
+    /////////////
+    // Getters //
+    /////////////
+
     public String getRoomName() {
         return roomName;
     }
@@ -50,7 +56,15 @@ public class Room {
         return roomDoors;
     }
 
-    // Setters
+    public ArrayList<Item> getRoomVisibleItems() {
+        return roomVisibleItems;
+    }
+
+
+    /////////////
+    // Setters //
+    /////////////
+
     public void setRoomName(String name){
         this.roomName = name;
     }
@@ -63,9 +77,14 @@ public class Room {
         this.roomGold = gold;
     }
 
-    // Post Initialization Setters
+
+    /////////////////////////////////
+    // Post Initialization Setters //
+    /////////////////////////////////
+
     public void addItemToRoom(Item item) {
         this.roomItems.add(item);
+        this.roomVisibleItems.add(item);
     }
 
     public void addDoorToRoom(Door door) {
@@ -75,6 +94,11 @@ public class Room {
     public void addIntrEnvToRoom(IntrEnv intrEnv){
         this.roomIntrEnv.add(intrEnv);
     }
+
+
+    //////////////////
+    // Game methods //
+    //////////////////
 
     public void removeIntrEnvFromRoom(String intrEnvID) {
         boolean found = false;
@@ -90,30 +114,43 @@ public class Room {
         }
     }
 
-    public void removeItemFromRoom(String itemID) {
+    public void removeItemFromRoom(Item item) {
         boolean found = false;
+        boolean found2 = false;
         for (int i = 0; i < this.roomItems.size(); i++) {
-            if (this.roomItems.get(i).getItemID().equals(itemID)) {
+            if (this.roomItems.get(i).getItemID().equals(item.getItemID())) {
                 this.roomItems.remove(i);
                 found = true;
                 break;
             }
         }
+
+        for (int i = 0; i < this.roomVisibleItems.size(); i++) {
+            if (this.roomVisibleItems.get(i).getItemID().equals(item.getItemID())) {
+                this.roomVisibleItems.remove(i);
+                found = true;
+                break;
+            }
+        }
+
         if (!found) {
-            System.out.println("Interactive Environment not found: " + itemID);
+            System.out.println("Item not found: " + item.getItemID());
         }
     }
 
-
-    // Game methods
     public void listRoomItems(){
-        System.out.println(roomItems.size());
         if(roomItems.isEmpty()){
             System.out.println("There are no items in the room.");
         } else {
             for(Item item : roomItems){
                 System.out.print(item.getItemName() + " ");
+                System.out.println();
             }
         }
+    }
+
+    public void resetRoomItems() {
+        this.roomItems.clear();
+        this.roomVisibleItems.clear();
     }
 }

@@ -8,21 +8,75 @@ public class Avatar {
     int avGold;
     ArrayList<Item> avInventory;
 
-    public Avatar(String avName, int avGold, ArrayList<Item> avInventory){
-        this.avName = avName;
+    public Avatar(int avGold) {
+        this.avName = "";
         this.avGold = avGold;
-        this.avInventory = avInventory;
+        this.avInventory = new ArrayList<Item>();
     }
 
-    public String getAvName(){
+
+    /////////////
+    // Getters //
+    /////////////
+
+    public String getAvName() {
         return avName;
     }
 
-    public int getAvGold(){
+    public int getAvGold() {
         return avGold;
     }
 
-    public ArrayList<Item> getAvInventory(){
+    public ArrayList<Item> getAvInventory() {
         return avInventory;
+    }
+
+
+    /////////////
+    // Setters //
+    /////////////
+
+    public void setAvName(String name) {
+        this.avName = name;
+    }
+
+    public void setAvGold(int gold) {
+        this.avGold = gold;
+    }
+
+    // No setters added for avInventory so far. Doesn't seem necessary as of now.
+
+
+    //////////////////
+    // Game Methods //
+    //////////////////
+
+    public void addToAvatarInventory(Item item) {
+        this.avInventory.add(item);
+    }
+
+    public void removeFromAvatarInventory(Item item) {
+        boolean found = false;
+        for (int i = 0; i < this.avInventory.size(); i++) {
+            if (this.avInventory.get(i).getItemID().equals(item.getItemID())) {
+                this.avInventory.remove(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Interactive Environment not found: " + item.getItemID());
+        }
+    }
+
+    public void listAvatarInventory() {
+        if(avInventory.isEmpty()){
+            System.out.println("There are no items in your inventory.");
+        } else {
+            for(Item item : avInventory){
+                System.out.print(item.getItemName() + " ");
+                System.out.println();
+            }
+        }
     }
 }

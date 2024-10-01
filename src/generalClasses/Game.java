@@ -2,6 +2,7 @@ package generalClasses;
 
 import interactiveEnvrionments.Door;
 import interactiveEnvrionments.Wardrobe;
+import inventoryItems.Item;
 import inventoryItems.Key;
 import ventureRooms.Room;
 
@@ -14,13 +15,15 @@ public class Game {
 
     public Game () {
 
-        System.out.println("Initializing Game");
-        initializeGame();
-        System.out.println("Game initialized");
+        instantiateGameObjects();
     }
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public ArrayList<Item> getAvatarInventory(Avatar avatar){
+        return avatar.getAvInventory();
     }
 
     public Room getRoom(String roomID) {
@@ -38,7 +41,42 @@ public class Game {
         System.out.println("You entered " + nextRoom.getRoomName());
     }
 
-    public void initializeGame() {
+    public Item findItemByName(String name, Avatar avatar) {
+        // Search in room
+        for (Item item : getCurrentRoom().getRoomVisibleItems()) {
+            if (item.getItemName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+
+        for (Item item : avatar.avInventory) {
+            if (item.getItemName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+
+        return null;  // No item found
+    }
+
+    public Item findRoomItemByName(String name) {
+        for (Item item : getCurrentRoom().getRoomVisibleItems()) {
+            if (item.getItemName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public Item findAvatarItemByName(String name, Avatar avatar) {
+        for (Item item : avatar.getAvInventory()) {
+            if (item.getItemName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void instantiateGameObjects() {
 
         /////////////////////////
         // DEFINING GAME ROOMS //
@@ -218,8 +256,6 @@ public class Game {
         w1.addKeyIDtoWardrobe(k4ID);
 
 
-        System.out.println("Items added to wardrobes");
-
         /////////////////////////////
         // ADDING OBJECTS TO ROOMS //
         /////////////////////////////
@@ -228,8 +264,6 @@ public class Game {
         r1.addItemToRoom(k1);
         r1.addDoorToRoom(d1);
 
-        System.out.println("R1 ready");
-
         // Room Two (r2)
         r2.addItemToRoom(k2);
         r2.addItemToRoom(k3);
@@ -237,35 +271,24 @@ public class Game {
         r2.addDoorToRoom(d2);
         r2.addDoorToRoom(d4);
 
-        System.out.println("R2 ready");
-
         // Room Three (r3)
         r3.addItemToRoom(k4);
         r3.addDoorToRoom(d2);
         r3.addDoorToRoom(d3);
 
-        System.out.println("R3 ready");
-
         // Room Four (r4)
         r4.addDoorToRoom(d3);
         r4.addIntrEnvToRoom(w1);
-
-        System.out.println("R4 ready");
 
         // Room Five (r5)
         r5.addDoorToRoom(d4);
         r5.addDoorToRoom(d5);
         r5.addIntrEnvToRoom(w2);
 
-        System.out.println("R5 ready");
-
         // Room Six (r6)
         r6.addDoorToRoom(d5);
         r6.addDoorToRoom(d6);
 
-        System.out.println("R6 ready");
-
-        System.out.println("Objects added to rooms");
 
         /////////////////////////////
         // ADDING ROOMS TO DOORS ////
@@ -299,8 +322,6 @@ public class Game {
         d6.addKeyIDtoDoor(k5ID);
 
 
-        System.out.println("Rooms added to doors");
-
         //////////////////////////
         // ADDING ROOMS TO GAME //
         //////////////////////////
@@ -314,10 +335,7 @@ public class Game {
             add(r6);
         }};
 
-        System.out.println("gameRooms created");
-
         currentRoom = r1;
 
-        System.out.println("Current room set");
     }
 }
