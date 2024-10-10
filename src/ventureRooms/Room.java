@@ -2,7 +2,8 @@ package ventureRooms;
 
 import java.util.ArrayList;
 
-import interactiveEnvrionments.Door;
+import generalClasses.Door;
+import generalInterfaces.Describable;
 import inventoryItems.Item;
 import interactiveEnvrionments.IntrEnv;
 
@@ -11,10 +12,11 @@ public class Room {
     String roomDescription;
     String roomID;
     int roomGold;
-    ArrayList<Item> roomItems;
+    public ArrayList<Item> roomItems;
     ArrayList<IntrEnv> roomIntrEnv;
     ArrayList<Door> roomDoors;
-    ArrayList<Item> roomVisibleItems;
+    public ArrayList<Item> roomVisibleItems; // Required to display all available items in the room, even after unlocking further items, whiting interactive environments, for example
+    public ArrayList<Describable> roomDescribableObjects;
 
     public Room(String roomName, String roomDescription, String roomID, int roomGold) {
         this.roomName = roomName;
@@ -25,6 +27,7 @@ public class Room {
         this.roomIntrEnv = new ArrayList<IntrEnv>();
         this.roomDoors = new ArrayList<Door>();
         this.roomVisibleItems = new ArrayList<Item>();
+        this.roomDescribableObjects = new ArrayList<Describable>();
     }
 
 
@@ -44,6 +47,10 @@ public class Room {
         return roomGold;
     }
 
+    public String getRoomID() {
+        return roomID;
+    }
+
     public ArrayList<Item> getRoomItems() {
         return roomItems;
     }
@@ -58,6 +65,10 @@ public class Room {
 
     public ArrayList<Item> getRoomVisibleItems() {
         return roomVisibleItems;
+    }
+
+    public ArrayList<Describable> getRoomDescribableObjects() {
+        return roomDescribableObjects;
     }
 
 
@@ -85,14 +96,18 @@ public class Room {
     public void addItemToRoom(Item item) {
         this.roomItems.add(item);
         this.roomVisibleItems.add(item);
+        this.roomDescribableObjects.add(item);
     }
 
     public void addDoorToRoom(Door door) {
         this.roomDoors.add(door);
+        this.roomIntrEnv.add(door);
+        this.getRoomDescribableObjects().add(door);
     }
 
     public void addIntrEnvToRoom(IntrEnv intrEnv){
         this.roomIntrEnv.add(intrEnv);
+        this.roomDescribableObjects.add(intrEnv);
     }
 
 
@@ -100,19 +115,16 @@ public class Room {
     // Game methods //
     //////////////////
 
-    public void removeIntrEnvFromRoom(String intrEnvID) {
-        boolean found = false;
-        for (int i = 0; i < this.roomIntrEnv.size(); i++) {
-            if (this.roomIntrEnv.get(i).getIntrEnvID().equals(intrEnvID)) {
-                this.roomIntrEnv.remove(i);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("Interactive Environment not found: " + intrEnvID);
+    // For Gold
+    public void listRoomGold(){
+        if (this.roomGold == 0){
+            System.out.println("There is no Gold in the room");
+        } else {
+            System.out.println(this.roomGold + " Gold");
         }
     }
+
+    // For Items
 
     public void removeItemFromRoom(Item item) {
         boolean found = false;
@@ -139,11 +151,11 @@ public class Room {
     }
 
     public void listRoomItems(){
-        if(roomItems.isEmpty()){
+        if(this.roomItems.isEmpty()){
             System.out.println("There are no items in the room.");
         } else {
             for(Item item : roomItems){
-                System.out.print(item.getItemName() + " ");
+                System.out.print(item.getDescribableName() + " ");
                 System.out.println();
             }
         }
@@ -152,5 +164,58 @@ public class Room {
     public void resetRoomItems() {
         this.roomItems.clear();
         this.roomVisibleItems.clear();
+    }
+
+    // For Interactive Environments
+
+    public void removeIntrEnvFromRoom(String intrEnvID) {
+        boolean found = false;
+        for (int i = 0; i < this.roomIntrEnv.size(); i++) {
+            if (this.roomIntrEnv.get(i).getIntrEnvID().equals(intrEnvID)) {
+                this.roomIntrEnv.remove(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("Interactive Environment not found: " + intrEnvID);
+        }
+    }
+
+    public void listRoomIntrEnvs() {
+        if(this.roomIntrEnv.isEmpty()){
+            System.out.println("There are no interactive environments in the room.");
+        } else {
+            for(IntrEnv intrEnv : this.roomIntrEnv){
+                System.out.print(intrEnv.getDescribableName() + " ");
+                System.out.println();
+            }
+        }
+    }
+
+    public IntrEnv findIntrEnvByName(String name){
+        if(this.roomIntrEnv.isEmpty()){
+            return null;
+        } else {
+            for(IntrEnv intrEnv : this.roomIntrEnv){
+                if (intrEnv.getIntrEnvName().equalsIgnoreCase(name)){
+                    return intrEnv;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Specifically for Doors
+
+    public void listRoomDoors() {
+        if(this.roomDoors.isEmpty()){
+            System.out.println("There are no doors in the room.");
+        } else {
+            for(Door door : this.roomDoors){
+                System.out.print(door.getDescribableName() + " ");
+                System.out.println();
+            }
+        }
     }
 }

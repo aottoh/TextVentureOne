@@ -1,11 +1,10 @@
 //import colorfulConsole.IntegratedCommandConsole;
-import inventoryItems.*;
-import ventureRooms.*;
+import generalInterfaces.Describable;
+import interactiveEnvrionments.IntrEnv;
+import interactiveEnvrionments.LockIntrEnv;
 import inventoryItems.*;
 import generalClasses.*;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Exec {
@@ -15,8 +14,10 @@ public class Exec {
     static Game game = new Game();
 
     public static void handleCommand(String command) {
-
-        switch (command.split(" ")[0]) {  // Check the first word in the command
+        /* handles the commands entered by the user over the console. All available commands are described
+        in the first help case.
+        */
+        switch (command.split(" ")[0]) {  // Checks  the first word in the command
             case "help":
                 System.out.println("------------------------------");
                 System.out.println("######### HELP MENU ##########");
@@ -24,8 +25,10 @@ public class Exec {
                 System.out.println();
                 System.out.println("describe room        : Returns the description of the room you are currently in.");
                 System.out.println("describe [OBJECTNAME]: Returns the description of any object in the room, or your inventory that you enter as parameter.");
-                System.out.println("list items           : Returns a list of all items available in the room");
-                System.out.println("list environment     : Returns a list of all interactive objects in the room");
+                System.out.println("list items           : Returns a list of all items available in the room.");
+                System.out.println("list gold            : Returns the amount of gold available in the room.");
+                System.out.println("list doors           : Returns a list of all doors in the room.");
+                System.out.println("list environment     : Returns a list of interactive objects in the room.");
                 System.out.println("take [ITEMNAME]      : Picks up any item from the room that you enter as parameter.");
                 System.out.println("take all             : Picks up all items in the room.");
                 System.out.println("drop [ITEMNAME]      : Drops the item from your inventory that you enter as parameter.");
@@ -42,15 +45,17 @@ public class Exec {
                 System.out.println();
                 break;
             case "describe":
-                if (command.equals("describe room")) {
+                if (command.equals("describe")) {
+                    System.out.println("Please enter Object to describe.");
+                } else if (command.equals("describe room")) {
                     System.out.println(game.getCurrentRoom().getRoomDescription());
                 } else {
                     // Extract object name after "describe "
                     String objectName = command.substring(9);  // Get substring after "describe "
-                    Item item = game.findItemByName(objectName, avatar);  // Method to find the item by name
+                    Describable describable = game.findDescribableByName(objectName, avatar);  // Method to find the item by name
 
-                    if (item != null) {
-                        System.out.println(item.getItemDescription());  // Print the item's description
+                    if (describable != null) {
+                        System.out.println(describable.getDescription());  // Prints the item's description
                     } else {
                         System.out.println("No such object found.");
                     }
@@ -59,14 +64,24 @@ public class Exec {
             case "list":
                 if (command.equals("list items")) {
                     game.getCurrentRoom().listRoomItems();
+                } else if (command.equals("list gold")) {
+                    game.getCurrentRoom().listRoomGold();
+                } else if (command.equals("list doors")) {
+                    game.getCurrentRoom().listRoomDoors();
                 } else if (command.equals("list environment")) {
-                    // Add logic for listing interactive environments
+                    game.getCurrentRoom().listRoomIntrEnvs();
                 } else {
                     System.out.println("Command not found.");
                 }
                 break;
             case "take":
-                if (command.equals("take all")) {
+                if (command.equals("take")){
+                    System.out.println("Please enter a valid TAKE command.");
+                } else if (command.equals("take gold")){
+                    avatar.setAvGold(avatar.getAvGold() + game.getCurrentRoom().getRoomGold());
+                    System.out.println(game.getCurrentRoom().getRoomGold() + " Gold taken.");
+                    game.getCurrentRoom().setRoomGold(0);
+                } else if (command.equals("take all")) {
                     if(!game.getCurrentRoom().getRoomVisibleItems().isEmpty()){
                         for (Item item : game.getCurrentRoom().getRoomVisibleItems()) {
                             avatar.addToAvatarInventory(item);
@@ -79,39 +94,85 @@ public class Exec {
 
                 } else {
                     // Extract object name after "take "
-                    String objectName = command.substring(5);  // Get substring after "describe "
-                    Item item = game.findRoomItemByName(objectName);  // Method to find the item by name
+                    String describeObjectName = command.substring(5);  // Get substring after "describe "
+                    Item item = game.findRoomItemByName(describeObjectName);  // Method to find the item by name
 
                     if (item != null) {
                         avatar.addToAvatarInventory(item);
                         game.getCurrentRoom().removeItemFromRoom(item);
-                        System.out.println(item.getItemName() + " picked up.");  // Print the item's description
+                        System.out.println(item.getDescribableName() + " picked up.");  // Print the item's description
                     } else {
                         System.out.println("No such object found.");
                     }
                 }
                 break;
             case "drop":
-                String objectName = command.substring(5);  // Get substring after "describe "
-                Item item = game.findAvatarItemByName(objectName, avatar);  // Method to find the item by name
-
-                if (item != null) {
-                    game.getCurrentRoom().addItemToRoom(item);
-                    avatar.removeFromAvatarInventory(item);
-                    System.out.println(item.getItemName() + " dropped.");  // Print the item's description
+                if (command.equals("drop")){
+                    System.out.println("Please enter a valid DROP command.");
                 } else {
-                    System.out.println("No such object found.");
+                    String dropObjectName = command.substring(5);  // Get substring after "describe "
+                    Item item = game.findAvatarItemByName(dropObjectName, avatar);  // Method to find the item by name
+
+                    if (item != null) {
+                        game.getCurrentRoom().addItemToRoom(item);
+                        avatar.removeFromAvatarInventory(item);
+                        System.out.println(item.getDescribableName() + " dropped.");  // Print the item's description
+                    } else {
+                        System.out.println("No such object found.");
+                    }
                 }
                 break;
             case "inventory":
                 avatar.listAvatarInventory();
+                break;
+            case "my":
+                if (command.equals("my gold")){
+                    if (avatar.getAvGold() > 0) {
+                        System.out.println(avatar.getAvGold() + " Gold in inventory.");
+                    } else {
+                        System.out.println("You don't have any gold.");
+                    }
+                } else {
+                    System.out.println("No valid command found.");
+                }
+                break;
+            case "unlock":
+                if (command.equals("unlock")) {
+                    System.out.println("What are you trying to unlock...?");
+                } else {
+                    String unlockObjectName = command.substring(7);  // Get substring after "unlock "
+                    IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(unlockObjectName);
+                    String requiredKeyID;
+                    if (intrEnv instanceof LockIntrEnv) {
+                        requiredKeyID = ((LockIntrEnv) intrEnv).getLockIntrEnvKeyID();
+                        if (avatar.getAvInventory() == null) {
+                            System.out.println("You don't have any keys.");
+                        } else {
+                            boolean foundKey = false;  // Flag to track if the key is found and used
+                            for (Item item : avatar.getAvInventory()) {
+                                if (item instanceof Key) {
+                                    if (item.getItemID().equals(requiredKeyID)) {
+                                        ((LockIntrEnv) intrEnv).unlockLockIntrEnv();
+                                        System.out.println(intrEnv.getIntrEnvName() + " unlocked.");
+                                        foundKey = true;  // Set flag to true if the correct key is found
+                                        break;  // Exit the loop once the object is unlocked
+                                    }
+                                }
+                            }
+                            if (!foundKey) {
+                                System.out.println("You don't have the correct key.");
+                            }
+                        }
+                    } else {
+                        System.out.println(unlockObjectName + " cannot be unlocked.");
+                    }
+                }
                 break;
             default:
                 System.out.println("No valid command found.");
                 break;
         }
     }
-
 
 
     public static void main(String args[]){

@@ -1,27 +1,34 @@
 package interactiveEnvrionments;
 
-public class IntrEnv {
+import generalInterfaces.Describable;
+
+public class IntrEnv implements Describable {
 
     String intrEnvName;
     String intrEnvDescription;
     String intrEnvID;
-    boolean intrEnvLocked;
-    boolean intrEnvEnterable;
 
-    public IntrEnv(String intrEnvName, String intrEnvDescription, String intrEnvID, boolean intrEnvlocked, boolean intrEnvEnterable){
+    public IntrEnv(String intrEnvName, String intrEnvDescription, String intrEnvID){
         this.intrEnvName = intrEnvName;
         this. intrEnvDescription = intrEnvDescription;
         this.intrEnvID = intrEnvID;
-        this.intrEnvLocked = intrEnvlocked;
-        this.intrEnvEnterable = intrEnvEnterable;
     }
 
-    // Getters
+
+    /////////////
+    // Getters //
+    /////////////
+
+    public String getDescribableName(){
+        return intrEnvName;
+    }
+
     public String getIntrEnvName(){
         return intrEnvName;
     }
 
-    public String getIntrEnvDescription(){
+    @Override
+    public String getDescription(){
         return intrEnvDescription;
     }
 
@@ -29,30 +36,18 @@ public class IntrEnv {
         return intrEnvID;
     }
 
-    public boolean isIntrEnvlocked() {
-        return intrEnvLocked;
-    }
 
-    public boolean isIntrEnterable() {
-        return intrEnvEnterable;
-    }
-
-    // Setters
+    /////////////
+    // Setters //
+    /////////////
     // IMPORTANT: Setters for all attributes, except of IntrEnvID. It must not be changed.
+
     public void setIntrEnvName(String name){
         this.intrEnvName = name;
     }
 
     public void setIntrEnvDescription(String description){
         this.intrEnvDescription = description;
-    }
-
-    public void setIntrEnvLocked(boolean lock){
-        this.intrEnvLocked = lock;
-    }
-
-    public void setIntrEnvEnterable(boolean enterable){
-        this.intrEnvEnterable = enterable;
     }
 
 }

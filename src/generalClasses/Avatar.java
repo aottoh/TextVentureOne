@@ -74,7 +74,7 @@ public class Avatar {
             System.out.println("There are no items in your inventory.");
         } else {
             for(Item item : avInventory){
-                System.out.print(item.getItemName() + " ");
+                System.out.print(item.getDescribableName() + " ");
                 System.out.println();
             }
         }

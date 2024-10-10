@@ -1,23 +1,29 @@
 package interactiveEnvrionments;
 
 import inventoryItems.Item;
+import ventureRooms.Room;
 
 import java.util.ArrayList;
 
-public class Wardrobe extends IntrEnv{
+public class Wardrobe extends LockIntrEnv{
 
     int wardrobeGold;
     ArrayList<Item> wardrobeItems;
     String wardrobeKeyID;
+    Room wardrobeRoom;
 
     public Wardrobe(String wardrobeName, String wardrobeDescription, String wardrobeID, boolean wardrobeLocked, int wardrobeGold){
-        super(wardrobeName, wardrobeDescription, wardrobeID, wardrobeLocked, false);
+        super(wardrobeName, wardrobeDescription, wardrobeID, wardrobeLocked, "");
         this.wardrobeItems = new ArrayList<Item>();
         this.wardrobeGold = wardrobeGold;
-        this.wardrobeKeyID = "";
+        this.wardrobeRoom = null;
     }
 
-    // Getters
+
+    /////////////
+    // Getters //
+    /////////////
+
     public ArrayList<Item> getWardrobeItems(){
         return wardrobeItems;
     }
@@ -26,7 +32,11 @@ public class Wardrobe extends IntrEnv{
         return wardrobeGold;
     }
 
-    // Post Initialization Setters
+
+    /////////////////////////////////
+    // Post Initialization Setters //
+    /////////////////////////////////
+
     public void addItemToWardrobe(Item item){
         this.wardrobeItems.add(item);
     }
@@ -34,6 +44,15 @@ public class Wardrobe extends IntrEnv{
     public void addKeyIDtoWardrobe(String keyID){
         this.wardrobeKeyID = keyID;
     }
+
+    public void addRoomToWardobe(Room room){
+        this.wardrobeRoom = room;
+    }
+
+
+    //////////////////
+    // Game methods //
+    //////////////////
 
     public void removeItemFromWardrobe(String itemID) {
         boolean found = false;
@@ -48,5 +67,6 @@ public class Wardrobe extends IntrEnv{
             System.out.println("Interactive Environment not found: " + itemID);
         }
     }
+
 
 }

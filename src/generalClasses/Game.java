@@ -1,6 +1,6 @@
 package generalClasses;
 
-import interactiveEnvrionments.Door;
+import generalInterfaces.Describable;
 import interactiveEnvrionments.Wardrobe;
 import inventoryItems.Item;
 import inventoryItems.Key;
@@ -44,13 +44,13 @@ public class Game {
     public Item findItemByName(String name, Avatar avatar) {
         // Search in room
         for (Item item : getCurrentRoom().getRoomVisibleItems()) {
-            if (item.getItemName().equalsIgnoreCase(name)) {
+            if (item.getDescribableName().equalsIgnoreCase(name)) {
                 return item;
             }
         }
 
         for (Item item : avatar.avInventory) {
-            if (item.getItemName().equalsIgnoreCase(name)) {
+            if (item.getDescribableName().equalsIgnoreCase(name)) {
                 return item;
             }
         }
@@ -58,9 +58,25 @@ public class Game {
         return null;  // No item found
     }
 
+    public Describable findDescribableByName(String name, Avatar avatar){
+
+        for (Describable describable : getCurrentRoom().getRoomDescribableObjects()){
+            if(describable.getDescribableName().equalsIgnoreCase(name)){
+                return describable;
+            }
+        }
+
+        for (Item item : avatar.avInventory){
+            if (item.getDescribableName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public Item findRoomItemByName(String name) {
         for (Item item : getCurrentRoom().getRoomVisibleItems()) {
-            if (item.getItemName().equalsIgnoreCase(name)) {
+            if (item.getDescribableName().equalsIgnoreCase(name)) {
                 return item;
             }
         }
@@ -69,7 +85,7 @@ public class Game {
 
     public Item findAvatarItemByName(String name, Avatar avatar) {
         for (Item item : avatar.getAvInventory()) {
-            if (item.getItemName().equalsIgnoreCase(name)) {
+            if (item.getDescribableName().equalsIgnoreCase(name)) {
                 return item;
             }
         }
@@ -85,7 +101,7 @@ public class Game {
 
         //Room One (r1)- Dark Chamber
         String r1Name = "Dark Chamber";
-        String r1Description = "A dimly lit chamber. You can't make out any source of light but you see a door North of you.";
+        String r1Description = "A dimly lit chamber. You can't make out any source of light but you see an old Rusty Door North of you.";
         String r1ID = "r01";
         int r1Gold = 5;
 
@@ -254,7 +270,10 @@ public class Game {
         // Wardrobe 1
         w1.addItemToWardrobe(k5);
         w1.addKeyIDtoWardrobe(k4ID);
+        w1.addRoomToWardobe(r4);
 
+        // Wardrobe 2
+        w2.addRoomToWardobe(r5);
 
         /////////////////////////////
         // ADDING OBJECTS TO ROOMS //
@@ -297,7 +316,7 @@ public class Game {
         // Door One (d1)
         d1.addRoomToDoor(r1);
         d1.addRoomToDoor(r2);
-        d1.addKeyIDtoDoor(k1ID);
+        d1.addKeyIDtoLockIntrEnv(k1ID);
 
         // Door Two (d2)
         d2.addRoomToDoor(r2);
@@ -306,12 +325,12 @@ public class Game {
         // Door Three (d3)
         d3.addRoomToDoor(r3);
         d3.addRoomToDoor(r4);
-        d3.addKeyIDtoDoor(k2ID);
+        d3.addKeyIDtoLockIntrEnv(k2ID);
 
         // Door Four (d4)
         d4.addRoomToDoor(r2);
         d4.addRoomToDoor(r5);
-        d4.addKeyIDtoDoor(k3ID);
+        d4.addKeyIDtoLockIntrEnv(k3ID);
 
         // Door Five (d5)
         d5.addRoomToDoor(r5);
@@ -319,7 +338,7 @@ public class Game {
 
         // Door Six (d6)
         d6.addRoomToDoor(r6);
-        d6.addKeyIDtoDoor(k5ID);
+        d6.addKeyIDtoLockIntrEnv(k5ID);
 
 
         //////////////////////////

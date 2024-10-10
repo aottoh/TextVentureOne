@@ -1,6 +1,8 @@
 package inventoryItems;
 
-public class Item {
+import generalInterfaces.Describable;
+
+public class Item implements Describable {
 
     //Class attributes
     public String itemName;
@@ -16,11 +18,12 @@ public class Item {
         this.itemValue = itemValue;
     }
 
-    public String getItemName(){
+    public String getDescribableName(){
         return itemName;
     }
 
-    public String getItemDescription(){
+    @Override
+    public String getDescription(){
         return itemDescription;
     }
 
