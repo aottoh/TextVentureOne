@@ -1,11 +1,13 @@
 package interactiveEnvrionments;
 
+import generalInterfaces.Describable;
+import generalInterfaces.ItemContainer;
 import inventoryItems.Item;
 import ventureRooms.Room;
 
 import java.util.ArrayList;
 
-public class Wardrobe extends LockIntrEnv{
+public class Wardrobe extends LockIntrEnv implements Describable, ItemContainer {
 
     int wardrobeGold;
     ArrayList<Item> wardrobeItems;
@@ -24,12 +26,28 @@ public class Wardrobe extends LockIntrEnv{
     // Getters //
     /////////////
 
-    public ArrayList<Item> getWardrobeItems(){
+    @Override
+    public ArrayList<Item> getICItems(){
         return wardrobeItems;
     }
 
-    public int getWardrobeGold(){
+    @Override
+    public int getICGold(){
         return wardrobeGold;
+    }
+
+    /////////////
+    // Setters //
+    /////////////
+
+    @Override
+    public void setICGold(int gold){
+        this.wardrobeGold = gold;
+    }
+
+    @Override
+    public void resetICItems(){
+        this.wardrobeItems.clear();
     }
 
 

@@ -13,6 +13,8 @@ public class Game {
     private ArrayList<Room> gameRooms;
     private Room currentRoom;
 
+    public Room r1;
+
     public Game () {
 
         instantiateGameObjects();
@@ -38,7 +40,6 @@ public class Game {
 
     public void changeCurrentRoom(Room nextRoom){
         this.currentRoom = nextRoom;
-        System.out.println("You entered " + nextRoom.getRoomName());
     }
 
     public Item findItemByName(String name, Avatar avatar) {
@@ -136,7 +137,7 @@ public class Game {
         int r6Gold = 0;
 
         //Initializing Rooms
-        Room r1 = new Room(r1Name, r1Description, r1ID, r1Gold);
+        r1 = new Room(r1Name, r1Description, r1ID, r1Gold);
         Room r2 = new Room(r2Name, r2Description, r2ID, r2Gold);
         Room r3 = new Room(r3Name, r3Description, r3ID, r3Gold);
         Room r4 = new Room(r4Name, r4Description, r4ID, r4Gold);
