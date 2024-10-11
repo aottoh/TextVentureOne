@@ -13,12 +13,14 @@ public class Wardrobe extends LockIntrEnv implements Describable, ItemContainer 
     ArrayList<Item> wardrobeItems;
     String wardrobeKeyID;
     Room wardrobeRoom;
+    boolean wardrobeOpened;
 
     public Wardrobe(String wardrobeName, String wardrobeDescription, String wardrobeID, boolean wardrobeLocked, int wardrobeGold){
         super(wardrobeName, wardrobeDescription, wardrobeID, wardrobeLocked, "");
         this.wardrobeItems = new ArrayList<Item>();
         this.wardrobeGold = wardrobeGold;
         this.wardrobeRoom = null;
+        this.wardrobeOpened = false;
     }
 
 
@@ -36,6 +38,11 @@ public class Wardrobe extends LockIntrEnv implements Describable, ItemContainer 
         return wardrobeGold;
     }
 
+    @Override
+    public boolean getICOpened(){
+        return wardrobeOpened;
+    }
+
     /////////////
     // Setters //
     /////////////
@@ -48,6 +55,11 @@ public class Wardrobe extends LockIntrEnv implements Describable, ItemContainer 
     @Override
     public void resetICItems(){
         this.wardrobeItems.clear();
+    }
+
+    @Override
+    public void setICOpened(boolean opened){
+        this.wardrobeOpened = opened;
     }
 
 

@@ -12,6 +12,7 @@ public interface ItemContainer {
 
     public ArrayList<Item> getICItems();
     public int getICGold();
+    public boolean getICOpened();
 
 
     /////////////
@@ -20,4 +21,5 @@ public interface ItemContainer {
 
     public void setICGold(int gold);
     public void resetICItems();
+    public void setICOpened(boolean opened);
 }

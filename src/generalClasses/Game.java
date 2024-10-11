@@ -13,8 +13,6 @@ public class Game {
     private ArrayList<Room> gameRooms;
     private Room currentRoom;
 
-    public Room r1;
-
     public Game () {
 
         instantiateGameObjects();
@@ -136,13 +134,20 @@ public class Game {
         String r6ID = "r06";
         int r6Gold = 0;
 
+        // Exit Room - Game finished
+        String exitRoomName = "exit room";
+        String exitRoomDescription = "";
+        String exitRoomID = "exitRoom";
+        int exitRoomGold = 0;
+
         //Initializing Rooms
-        r1 = new Room(r1Name, r1Description, r1ID, r1Gold);
+        Room r1 = new Room(r1Name, r1Description, r1ID, r1Gold);
         Room r2 = new Room(r2Name, r2Description, r2ID, r2Gold);
         Room r3 = new Room(r3Name, r3Description, r3ID, r3Gold);
         Room r4 = new Room(r4Name, r4Description, r4ID, r4Gold);
         Room r5 = new Room(r5Name, r5Description, r5ID, r5Gold);
         Room r6 = new Room(r6Name, r6Description, r6ID, r6Gold);
+        Room exitRoom = new Room(exitRoomName, exitRoomDescription, exitRoomID, exitRoomGold);
 
 
         /////////////////////////
@@ -309,6 +314,9 @@ public class Game {
         r6.addDoorToRoom(d5);
         r6.addDoorToRoom(d6);
 
+        // Exit Room
+        exitRoom.addDoorToRoom(d6);
+
 
         /////////////////////////////
         // ADDING ROOMS TO DOORS ////
@@ -339,6 +347,7 @@ public class Game {
 
         // Door Six (d6)
         d6.addRoomToDoor(r6);
+        d6.addRoomToDoor(exitRoom);
         d6.addKeyIDtoLockIntrEnv(k5ID);
 
 
@@ -353,6 +362,7 @@ public class Game {
             add(r4);
             add(r5);
             add(r6);
+            add(exitRoom);
         }};
 
         currentRoom = r1;

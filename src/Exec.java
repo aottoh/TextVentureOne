@@ -7,6 +7,7 @@ import inventoryItems.*;
 import generalClasses.*;
 import ventureRooms.Room;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Exec {
@@ -154,26 +155,32 @@ public class Exec {
                         } else if (intrEnv instanceof Door) {
                             System.out.println("Don't you rather want to enter the " + intrEnv.getIntrEnvName() + "?");
                         } else if (intrEnv instanceof ItemContainer) {
-                            if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() == 0){
-                                System.out.println(intrEnv.getIntrEnvName() + " is empty.");
-                            } else if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() > 0) {
-                                game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
-                                ((ItemContainer) intrEnv).setICGold(0);
-                                System.out.println(intrEnv.getIntrEnvName() + " 's " + ((ItemContainer) intrEnv).getICGold() + " gold added to the room.");
-                            } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() == 0) {
-                                for (Item item : ((ItemContainer) intrEnv).getICItems()) {
-                                    game.getCurrentRoom().addItemToRoom(item);
+                            if (((ItemContainer) intrEnv).getICOpened()) {
+                                System.out.println("You already opened " + intrEnv.getIntrEnvName() + ".");
+                            }
+                            else {
+                                if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() == 0){
+                                    System.out.println(intrEnv.getIntrEnvName() + " is empty.");
+                                } else if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() > 0) {
+                                    game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
+                                    ((ItemContainer) intrEnv).setICGold(0);
+                                    System.out.println(intrEnv.getIntrEnvName() + " 's " + ((ItemContainer) intrEnv).getICGold() + " gold added to the room.");
+                                } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() == 0) {
+                                    for (Item item : ((ItemContainer) intrEnv).getICItems()) {
+                                        game.getCurrentRoom().addItemToRoom(item);
+                                    }
+                                    ((ItemContainer) intrEnv).resetICItems();
+                                    System.out.println(intrEnv.getIntrEnvName() + "'s items added to the room");
+                                } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() > 0) {
+                                    for (Item item : ((ItemContainer) intrEnv).getICItems()) {
+                                        game.getCurrentRoom().addItemToRoom(item);
+                                    }
+                                    game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
+                                    ((ItemContainer) intrEnv).setICGold(0);
+                                    ((ItemContainer) intrEnv).resetICItems();
+                                    System.out.println(intrEnv.getIntrEnvName() + "'s items and gold added to the room");
                                 }
-                                ((ItemContainer) intrEnv).resetICItems();
-                                System.out.println(intrEnv.getIntrEnvName() + "'s items added to the room");
-                            } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() > 0) {
-                                for (Item item : ((ItemContainer) intrEnv).getICItems()) {
-                                    game.getCurrentRoom().addItemToRoom(item);
-                                }
-                                game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
-                                ((ItemContainer) intrEnv).setICGold(0);
-                                ((ItemContainer) intrEnv).resetICItems();
-                                System.out.println(intrEnv.getIntrEnvName() + "'s items and gold added to the room");
+                                ((ItemContainer) intrEnv).setICOpened(true);
                             }
                         }
                     } else {
@@ -225,12 +232,18 @@ public class Exec {
                     String enterDoorName = command.substring(6);  // Get substring after "unlock "
                     IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(enterDoorName);
                     if (intrEnv instanceof Door){
-                        if (((Door) intrEnv).getLockIntrEnvLocked() == true){
+                        if (((Door) intrEnv).getLockIntrEnvLocked()){
                             System.out.println(intrEnv.getIntrEnvName() + " is locked.");
                         } else {
                             for (Room room : ((Door) intrEnv).getDoorRooms()){
                                 if (room != game.getCurrentRoom()){
                                     game.changeCurrentRoom(room);
+                                    if (Objects.equals(game.getCurrentRoom().getRoomID(), "exitRoom")){
+                                        System.out.println("Congratulations! You finished the game!");
+                                        System.out.println("You collected " + avatar.getAvGold() + " of 85 possible Gold.");
+                                        running = false;
+                                        break;
+                                    }
                                     System.out.println("You entered " + room.getRoomName());
                                     System.out.println(room.getRoomDescription());
                                     break;
