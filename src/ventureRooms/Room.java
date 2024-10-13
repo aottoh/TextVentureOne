@@ -6,6 +6,7 @@ import generalClasses.Door;
 import generalInterfaces.Describable;
 import inventoryItems.Item;
 import interactiveEnvrionments.IntrEnv;
+import generalClasses.Exec;
 
 public class Room {
     String roomName;
@@ -118,9 +119,9 @@ public class Room {
     // For Gold
     public void listRoomGold(){
         if (this.roomGold == 0){
-            System.out.println("There is no Gold in the room");
+            Exec.appendToConsole("\n  There is no Gold in the room");
         } else {
-            System.out.println(this.roomGold + " Gold");
+            Exec.appendToConsole("\n  " + this.roomGold + " Gold");
         }
     }
 
@@ -146,17 +147,16 @@ public class Room {
         }
 
         if (!found) {
-            System.out.println("Item not found: " + item.getItemID());
+            Exec.appendToConsole("Item not found: " + item.getItemID());
         }
     }
 
     public void listRoomItems(){
         if(this.roomItems.isEmpty()){
-            System.out.println("There are no items in the room.");
+            Exec.appendToConsole("\n  There are no items in the room.");
         } else {
             for(Item item : roomItems){
-                System.out.print(item.getDescribableName() + " ");
-                System.out.println();
+                Exec.appendToConsole("\n  " + item.getDescribableName() + " ");
             }
         }
     }
@@ -178,17 +178,16 @@ public class Room {
             }
         }
         if (!found) {
-            System.out.println("Interactive Environment not found: " + intrEnvID);
+            Exec.appendToConsole("Interactive Environment not found: " + intrEnvID);
         }
     }
 
     public void listRoomIntrEnvs() {
         if(this.roomIntrEnv.isEmpty()){
-            System.out.println("There are no interactive environments in the room.");
+            Exec.appendToConsole("\n  There are no interactive environments in the room.");
         } else {
             for(IntrEnv intrEnv : this.roomIntrEnv){
-                System.out.print(intrEnv.getDescribableName() + " ");
-                System.out.println();
+                Exec.appendToConsole("\n  " + intrEnv.getDescribableName() + " ");
             }
         }
     }
@@ -210,11 +209,10 @@ public class Room {
 
     public void listRoomDoors() {
         if(this.roomDoors.isEmpty()){
-            System.out.println("There are no doors in the room.");
+            Exec.appendToConsole("\n  There are no doors in the room.");
         } else {
             for(Door door : this.roomDoors){
-                System.out.print(door.getDescribableName() + " ");
-                System.out.println();
+                Exec.appendToConsole("\n  " + door.getDescribableName() + " ");
             }
         }
     }
