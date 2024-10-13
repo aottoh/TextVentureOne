@@ -8,9 +8,9 @@ public class Avatar {
     int avGold;
     ArrayList<Item> avInventory;
 
-    public Avatar(int avGold) {
+    public Avatar() {
         this.avName = "";
-        this.avGold = avGold;
+        this.avGold = 0;
         this.avInventory = new ArrayList<Item>();
     }
 
