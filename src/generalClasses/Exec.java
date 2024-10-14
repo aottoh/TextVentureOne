@@ -34,6 +34,13 @@ public class Exec extends JFrame{
     private int commandStart = 0;     // Track where user can start typing
     private boolean isTyping = false;  // Track typing state
 
+    /*
+    JTextPane textPane = new JTextPane();
+    StyledDocument doc = textPane.getStyledDocument();
+    private Style normal = doc.addStyle("normal", null);
+    private Style bold = doc.addStyle("bold", normal);
+    */
+
     private static Color keyColor = new Color(255, 117, 0, 163); // Way to set my own colors!
     private static Color goldColor = new Color(255, 199, 0);
     private static Color itemColor = new Color(0,0,0);
@@ -149,6 +156,22 @@ public class Exec extends JFrame{
         appendToConsole("\n", Color.BLACK, false, false);
     }
 
+    public static void appendLnToConsole(String text, Color color, boolean isBold, boolean isItalic){
+        appendToConsole("\n  " + text, color, isBold, isItalic);
+    }
+
+    public static void appendLnToConsole(String text, Color color){
+        appendToConsole("\n  " + text, color);
+    }
+
+    public static void appendLnToConsole(String text) {
+        appendToConsole("\n  " + text);
+    }
+
+    public static void appendLnToConsole(){
+        appendToConsole();
+    }
+
     public void appendPrompt() {
         // Append prompt to console and track where user can start typing
         appendToConsole("\n" + prompt, Color.BLACK);  // New prompt on a new line
@@ -175,6 +198,38 @@ public class Exec extends JFrame{
         }
     }
 
+    public static void printDescriptionWithBoldDoors(StyledDocument doc, String description, Style bold, Style normal) {
+        // List of door types to bold
+        String[] boldWords = {"Rusty Door", "Ivory Door", "Wooden Door", "Copper Door", "Silver Door", "Black Door", "North", "East", "South", "West"};
+
+        try {
+            int currentPos = 0;
+
+            // Loop through the description, finding doors and applying styles
+            for (String boldWord : boldWords) {
+                int doorIndex = description.indexOf(boldWord, currentPos);
+                if (doorIndex != -1) {
+                    // Insert the text before the door in normal style
+                    doc.insertString(doc.getLength(), description.substring(currentPos, doorIndex), normal);
+                    // Insert the door in bold style
+                    doc.insertString(doc.getLength(), boldWord, bold);
+                    // Update current position
+                    currentPos = doorIndex + boldWord.length();
+                }
+            }
+
+            // Insert any remaining text after the last door in normal style
+            if (currentPos < description.length()) {
+                doc.insertString(doc.getLength(), description.substring(currentPos), normal);
+            }
+
+            // Add a newline to separate descriptions
+            doc.insertString(doc.getLength(), "\n\n", normal);
+
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
 
     //////////////////////
     // command handling //
@@ -184,6 +239,7 @@ public class Exec extends JFrame{
         /* handles the commands entered by the user over the console. All available commands are described
         in the first help case.
         */
+        appendLnToConsole();
         switch (command.split(" ")[0]){
             case "help" -> handleHelp(command);
             case "describe" -> handleDescribe(command);
@@ -195,53 +251,53 @@ public class Exec extends JFrame{
             case "unlock" -> handleUnlock(command);
             case "enter" -> handleEnter(command);
             case "quit" -> handleQuit(command);
-            default -> System.out.println("No valid command found.");
+            default -> appendLnToConsole("No valid command found.");
         }
     }
 
     private static void handleHelp(String command){
-        appendToConsole(newline + "------------------------------");
-        appendToConsole(newline + "######### HELP MENU ##########");
-        appendToConsole(newline + "------------------------------");
-        appendToConsole();
-        appendToConsole(newline + "describe room        : Returns the description of the room you are currently in.");
-        appendToConsole(newline + "describe [OBJECTNAME]: Returns the description of the given object in the room, or your inventory.");
-        appendToConsole(newline + "list items           : Returns a list of all items available in the room.");
-        appendToConsole(newline + "list gold            : Returns the amount of gold available in the room.");
-        appendToConsole(newline + "list doors           : Returns a list of all doors in the room.");
-        appendToConsole(newline + "list environment     : Returns a list of interactive objects in the room.");
-        //appendToConsole(newline + "inspect [OBJECTNAME] : Returns more details about a given object.");
-        appendToConsole(newline + "take [ITEMNAME]      : Picks up any item from the room that you enter as parameter.");
-        appendToConsole(newline + "take all             : Picks up all items in the room.");
-        appendToConsole(newline + "drop [ITEMNAME]      : Drops the item from your inventory that you enter as parameter.");
-        appendToConsole(newline + "inventory            : Prints out the list of items on your inventory.");
-        appendToConsole(newline + "my gold              : Prints out how much gold you currently possess.");
-        appendToConsole(newline + "open [OBJECTNAME]    : Opens a given unlocked object, possibly adds items to the room.");
-        appendToConsole(newline + "unlock [OBJECTNAME]  : Unlocks provided object such as a door or a piece of furniture - if you have the right key.");
-        appendToConsole(newline + "enter [OBJECTNAME]   : Enters provided object such as doors or furniture - if it's unlocked.");
-        //appendToConsole(newline + "save game            : Saves your current game progress.");
-        //appendToConsole(newline + "load game            : Loads game from your last safe.");
-        appendToConsole(newline + "quit game            : Quits the game.");
-        appendToConsole();
-        appendToConsole(newline + "------------------------------");
-        appendToConsole(newline + "######## END OF HELP #########");
-        appendToConsole(newline + "------------------------------");
-        appendToConsole();
+        appendLnToConsole("------------------------------");
+        appendLnToConsole("######### HELP MENU ##########");
+        appendLnToConsole("------------------------------");
+        appendLnToConsole();
+        appendLnToConsole("describe room        : Returns the description of the room you are currently in.");
+        appendLnToConsole("describe [OBJECTNAME]: Returns the description of the given object in the room, or your inventory.");
+        appendLnToConsole("list items           : Returns a list of all items available in the room.");
+        appendLnToConsole("list gold            : Returns the amount of gold available in the room.");
+        appendLnToConsole("list doors           : Returns a list of all doors in the room.");
+        appendLnToConsole("list environment     : Returns a list of interactive objects in the room.");
+        //appendLnToConsole("inspect [OBJECTNAME] : Returns more details about a given object.");
+        appendLnToConsole("take [ITEMNAME]      : Picks up any item from the room that you enter as parameter.");
+        appendLnToConsole("take all             : Picks up all items in the room.");
+        appendLnToConsole("drop [ITEMNAME]      : Drops the item from your inventory that you enter as parameter.");
+        appendLnToConsole("inventory            : Prints out the list of items on your inventory.");
+        appendLnToConsole("my gold              : Prints out how much gold you currently possess.");
+        appendLnToConsole("open [OBJECTNAME]    : Opens a given unlocked object, possibly adds items to the room.");
+        appendLnToConsole("unlock [OBJECTNAME]  : Unlocks provided object such as a door or a piece of furniture - if you have the right key.");
+        appendLnToConsole("enter [OBJECTNAME]   : Enters provided object such as doors or furniture - if it's unlocked.");
+        //appendLnToConsole("save game            : Saves your current game progress.");
+        //appendLnToConsole("load game            : Loads game from your last safe.");
+        appendLnToConsole("quit game            : Quits the game.");
+        appendLnToConsole();
+        appendLnToConsole("------------------------------");
+        appendLnToConsole("######## END OF HELP #########");
+        appendLnToConsole("------------------------------");
     }
 
     private static void handleDescribe(String command){
         if (command.equals("describe")) {
-            appendToConsole(newline + "What do you want to have described?", invalidColor);
+            appendLnToConsole("What do you want to have described?", invalidColor);
         } else if (command.equals("describe room")) {
-            appendToConsole(newline + game.getCurrentRoom().getRoomDescription());
+            appendLnToConsole(game.getCurrentRoom().getRoomDescription());
+            //printDescriptionWithBoldDoors(doc, game.getCurrentRoom().getRoomDescription(), bold, normal);
         } else {
             // Extract object name after "describe "
             String objectName = command.substring(9);  // Get substring after "describe "
             Describable describable = game.findDescribableByName(objectName, avatar);  // Method to find the item by name
             if (describable != null) {
-                appendToConsole(newline + describable.getDescription());  // Prints the item's description
+                appendLnToConsole(describable.getDescription());  // Prints the item's description
             } else {
-                appendToConsole(newline + "No such object found.");
+                appendLnToConsole("No such object found.");
             }
         }
     }
@@ -258,10 +314,10 @@ public class Exec extends JFrame{
 
     private static void handleTake(String command){
         if (command.equals("take")){
-            Exec.appendToConsole(newline + "Take what..?", invalidColor);
+            Exec.appendLnToConsole("Take what..?", invalidColor);
         } else if (command.equals("take gold")){
             avatar.setAvGold(avatar.getAvGold() + game.getCurrentRoom().getRoomGold());
-            Exec.appendToConsole(newline + game.getCurrentRoom().getRoomGold() + " Gold taken.");
+            Exec.appendLnToConsole(game.getCurrentRoom().getRoomGold() + " Gold taken.");
             game.getCurrentRoom().setRoomGold(0);
         } else if (command.equals("take all")) {
             if(!game.getCurrentRoom().getRoomVisibleItems().isEmpty()){
@@ -271,9 +327,9 @@ public class Exec extends JFrame{
                 game.getCurrentRoom().resetRoomItems();
                 avatar.setAvGold(avatar.getAvGold() + game.getCurrentRoom().getRoomGold());
                 game.getCurrentRoom().setRoomGold(0);
-                Exec.appendToConsole(newline + "All items picked up.");
+                Exec.appendLnToConsole("All items picked up.");
             } else {
-                Exec.appendToConsole(newline + "No items to pick up.");
+                Exec.appendLnToConsole("No items to pick up.");
             }
         } else {
             // Extract object name after "take "
@@ -283,16 +339,16 @@ public class Exec extends JFrame{
             if (item != null) {
                 avatar.addToAvatarInventory(item);
                 game.getCurrentRoom().removeItemFromRoom(item);
-                Exec.appendToConsole(newline + item.getDescribableName() + " picked up.");  // Print the item's description
+                Exec.appendLnToConsole(item.getDescribableName() + " picked up.");  // Print the item's description
             } else {
-                Exec.appendToConsole(newline + "No such object found.");
+                Exec.appendLnToConsole("No such object found.");
             }
         }
     }
 
     private static void handleDrop(String command){
         if (command.equals("drop")){
-            appendToConsole(newline + "Please enter a valid DROP command.", invalidColor);
+            appendLnToConsole("Please enter a valid DROP command.", invalidColor);
         } else {
             String dropObjectName = command.substring(5);  // Get substring after "describe "
             Item item = game.findAvatarItemByName(dropObjectName, avatar);  // Method to find the item by name
@@ -300,9 +356,9 @@ public class Exec extends JFrame{
             if (item != null) {
                 game.getCurrentRoom().addItemToRoom(item);
                 avatar.removeFromAvatarInventory(item);
-                appendToConsole(newline + item.getDescribableName() + " dropped.");  // Print the item's description
+                appendLnToConsole(item.getDescribableName() + " dropped.");  // Print the item's description
             } else {
-                appendToConsole(newline + "No such object found.");
+                appendLnToConsole("No such object found.");
             }
         }
     }
@@ -314,13 +370,13 @@ public class Exec extends JFrame{
                 break;
             case "my gold":
                 if (avatar.getAvGold() > 0) {
-                    appendToConsole(newline + avatar.getAvGold() + " Gold in inventory.");
+                    appendLnToConsole(avatar.getAvGold() + " Gold in inventory.");
                 } else {
-                    appendToConsole(newline + "You don't have any gold.");
+                    appendLnToConsole("You don't have any gold.");
                 }
                 break;
             default:
-                appendToConsole(newline + "I didn't understand.", invalidColor);
+                appendLnToConsole("I didn't understand.", invalidColor);
                 break;
         }
 
@@ -328,32 +384,32 @@ public class Exec extends JFrame{
 
     private static void handleOpen(String command){
         if (command.equals("open")) {
-            appendToConsole(newline + "Specify what you want to open.", invalidColor);
+            appendLnToConsole("Specify what you want to open.", invalidColor);
         } else {
             String openObjectName = command.substring(5);
             IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(openObjectName);
             if (intrEnv instanceof LockIntrEnv){
                 if (((LockIntrEnv) intrEnv).getLockIntrEnvLocked()){
-                    appendToConsole(newline + intrEnv.getIntrEnvName() + " is locked.");
+                    appendLnToConsole(intrEnv.getIntrEnvName() + " is locked.");
                 } else if (intrEnv instanceof Door) {
-                    appendToConsole(newline + "Don't you rather want to enter the " + intrEnv.getIntrEnvName() + "?");
+                    appendLnToConsole("Don't you rather want to enter the " + intrEnv.getIntrEnvName() + "?");
                 } else if (intrEnv instanceof ItemContainer) {
                     if (((ItemContainer) intrEnv).getICOpened()) {
-                        appendToConsole(newline + "You already opened " + intrEnv.getIntrEnvName() + ".");
+                        appendLnToConsole("You already opened " + intrEnv.getIntrEnvName() + ".");
                     }
                     else {
                         if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() == 0){
-                            appendToConsole(newline + intrEnv.getIntrEnvName() + " is empty.");
+                            appendLnToConsole(intrEnv.getIntrEnvName() + " is empty.");
                         } else if (((ItemContainer) intrEnv).getICItems() == null & ((ItemContainer) intrEnv).getICGold() > 0) {
                             game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
                             ((ItemContainer) intrEnv).setICGold(0);
-                            appendToConsole(newline + intrEnv.getIntrEnvName() + " 's " + ((ItemContainer) intrEnv).getICGold() + " gold added to the room.");
+                            appendLnToConsole(intrEnv.getIntrEnvName() + " 's " + ((ItemContainer) intrEnv).getICGold() + " gold added to the room.");
                         } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() == 0) {
                             for (Item item : ((ItemContainer) intrEnv).getICItems()) {
                                 game.getCurrentRoom().addItemToRoom(item);
                             }
                             ((ItemContainer) intrEnv).resetICItems();
-                            appendToConsole(newline + intrEnv.getIntrEnvName() + "'s items added to the room");
+                            appendLnToConsole(intrEnv.getIntrEnvName() + "'s items added to the room");
                         } else if (((ItemContainer) intrEnv).getICItems() != null & ((ItemContainer) intrEnv).getICGold() > 0) {
                             for (Item item : ((ItemContainer) intrEnv).getICItems()) {
                                 game.getCurrentRoom().addItemToRoom(item);
@@ -361,90 +417,90 @@ public class Exec extends JFrame{
                             game.getCurrentRoom().setRoomGold(game.getCurrentRoom().getRoomGold() + ((ItemContainer) intrEnv).getICGold());
                             ((ItemContainer) intrEnv).setICGold(0);
                             ((ItemContainer) intrEnv).resetICItems();
-                            appendToConsole(newline + intrEnv.getIntrEnvName() + "'s items and gold added to the room");
+                            appendLnToConsole(intrEnv.getIntrEnvName() + "'s items and gold added to the room");
                         }
                         ((ItemContainer) intrEnv).setICOpened(true);
                     }
                 }
             } else {
-                appendToConsole(newline + openObjectName + " cannot be opened.");
+                appendLnToConsole(openObjectName + " cannot be opened.");
             }
         }
     }
 
     private static void handleUnlock(String command){
         if (command.equals("unlock")) {
-            appendToConsole(newline + "What are you trying to unlock...?", invalidColor);
+            appendLnToConsole("What are you trying to unlock...?", invalidColor);
         } else {
             String unlockObjectName = command.substring(7);  // Get substring after "unlock "
             IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(unlockObjectName);
             String requiredKeyID;
             if (intrEnv instanceof LockIntrEnv) {
                 if (!((LockIntrEnv) intrEnv).getLockIntrEnvLocked()) {
-                    appendToConsole(newline + intrEnv.getIntrEnvName() + " is already unlocked");
+                    appendLnToConsole(intrEnv.getIntrEnvName() + " is already unlocked");
                 } else {
                     requiredKeyID = ((LockIntrEnv) intrEnv).getLockIntrEnvKeyID();
                     if (avatar.getAvInventory() == null) {
-                        appendToConsole(newline + "You don't have any keys.");
+                        appendLnToConsole("You don't have any keys.");
                     } else {
                         boolean foundKey = false;  // Flag to track if the key is found and used
                         for (Item item : avatar.getAvInventory()) {
                             if (item instanceof Key) {
                                 if (item.getItemID().equals(requiredKeyID)) {
                                     ((LockIntrEnv) intrEnv).unlockLockIntrEnv();
-                                    appendToConsole(newline + intrEnv.getIntrEnvName() + " unlocked.");
+                                    appendLnToConsole(intrEnv.getIntrEnvName() + " unlocked.");
                                     foundKey = true;  // Set flag to true if the correct key is found
                                     break;  // Exit the loop once the object is unlocked
                                 }
                             }
                         }
                         if (!foundKey) {
-                            appendToConsole(newline + "You don't have the correct key.");
+                            appendLnToConsole("You don't have the correct key.");
                         }
                     }
                 }
             } else {
-                appendToConsole(newline + unlockObjectName + " cannot be unlocked.");
+                appendLnToConsole(unlockObjectName + " cannot be unlocked.");
             }
         }
     }
 
     private static void handleEnter(String command){
         if (command.equals("enter")) {
-            appendToConsole(newline + "What do you want to enter?", invalidColor);
+            appendLnToConsole("What do you want to enter?", invalidColor);
         } else {
             String enterDoorName = command.substring(6);  // Get substring after "unlock "
             IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(enterDoorName);
             if (intrEnv instanceof Door){
                 if (((Door) intrEnv).getLockIntrEnvLocked()){
-                    appendToConsole(newline + intrEnv.getIntrEnvName() + " is locked.");
+                    appendLnToConsole(intrEnv.getIntrEnvName() + " is locked.");
                 } else {
                     for (Room room : ((Door) intrEnv).getDoorRooms()){
                         if (room != game.getCurrentRoom()){
                             game.changeCurrentRoom(room);
                             if (Objects.equals(game.getCurrentRoom().getRoomID(), "exitRoom")){
-                                appendToConsole(newline + "Congratulations! You finished the game!");
-                                appendToConsole(newline + "You collected " + avatar.getAvGold() + " of 85 possible Gold.");
+                                appendLnToConsole("Congratulations! You finished the game!");
+                                appendLnToConsole("You collected " + avatar.getAvGold() + " of 85 possible Gold.");
                                 running = false;
                                 break;
                             }
-                            appendToConsole(newline + "You entered " + room.getRoomName());
-                            appendToConsole(newline + room.getRoomDescription());
+                            appendLnToConsole("You entered " + room.getRoomName());
+                            appendLnToConsole(room.getRoomDescription());
                             break;
                         }
                     }
                 }
             } else if (intrEnv == null) {
-                appendToConsole(newline + "There is no " + enterDoorName);
+                appendLnToConsole("There is no " + enterDoorName);
             } else {
-                appendToConsole(newline + "You cannot enter " + enterDoorName);
+                appendLnToConsole("You cannot enter " + enterDoorName);
             }
         }
     }
 
     private static void handleQuit(String command){
         if (command.equals("quit")) {
-            appendToConsole(newline + "Please enter \"quit game\" to quit the game");
+            appendLnToConsole("Please enter \"quit game\" to quit the game");
         } else {
             running = false;
             System.exit(0);
@@ -457,61 +513,8 @@ public class Exec extends JFrame{
     //////////
 
     public static void main(String args[]){
-        //Code
-        /*
-        Scanner reader = new Scanner(System.in);
-        String response;
-        boolean next = false;
-         */
 
         SwingUtilities.invokeLater(() -> new Exec());
 
-        /*
-        System.out.println();
-        System.out.println("ROOMVENTURE");
-        System.out.println();
-        System.out.println("Explore the rooms");
-        System.out.println();
-        //System.out.println("In order to see a list of all commands, please type \"help\"");
-        System.out.println("Press ENTER to continue.");
-        reader.nextLine();
-         */
-
-        /*
-        System.out.println("------------------------------");
-        System.out.println();
-        System.out.println("You wake up, no memory of nothing. You appear to be in a dark room. Though you can't make out any source of light, you find yourself in a dimly lit room. ");
-        System.out.println("---");
-        System.out.println("You try to concentrate, remember something about yourself. All that comes to you, is your name.");
-        System.out.print("Enter your name: ");
-        response = reader.next();
-        reader.nextLine();
-        avatar.setAvName(response);
-        */
-
-        /*
-        avatar.setAvName("TESTER");
-        System.out.println("Welcome " + avatar.getAvName());
-        System.out.println();
-         */
-
-        /*
-        System.out.println("Type any command or \"help\" for help.");
-        while (running){
-            response = reader.nextLine().trim();
-
-            if(!running){
-                break;
-            } else {
-                handleCommand(response);
-                //System.out.println("Press ENTER to continue. Or type \"help\" or any other command.");
-            }
-
-        }
-
-        System.out.println("Game over.");
-
-        reader.close();
-         */
     }
 }

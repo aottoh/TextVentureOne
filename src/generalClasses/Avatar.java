@@ -71,10 +71,10 @@ public class Avatar {
 
     public void listAvatarInventory() {
         if(avInventory.isEmpty()){
-            Exec.appendToConsole("\n  There are no items in your inventory.");
+            Exec.appendLnToConsole("There are no items in your inventory.");
         } else {
             for(Item item : avInventory){
-                Exec.appendToConsole("\n  " + item.getDescribableName() + " ");
+                Exec.appendLnToConsole(item.getDescribableName() + " ");
             }
         }
     }

@@ -119,9 +119,9 @@ public class Room {
     // For Gold
     public void listRoomGold(){
         if (this.roomGold == 0){
-            Exec.appendToConsole("\n  There is no Gold in the room");
+            Exec.appendLnToConsole("There is no Gold in the room");
         } else {
-            Exec.appendToConsole("\n  " + this.roomGold + " Gold");
+            Exec.appendLnToConsole(this.roomGold + " Gold");
         }
     }
 
@@ -153,10 +153,10 @@ public class Room {
 
     public void listRoomItems(){
         if(this.roomItems.isEmpty()){
-            Exec.appendToConsole("\n  There are no items in the room.");
+            Exec.appendLnToConsole("There are no items in the room.");
         } else {
             for(Item item : roomItems){
-                Exec.appendToConsole("\n  " + item.getDescribableName() + " ");
+                Exec.appendLnToConsole(item.getDescribableName() + " ");
             }
         }
     }
@@ -184,10 +184,10 @@ public class Room {
 
     public void listRoomIntrEnvs() {
         if(this.roomIntrEnv.isEmpty()){
-            Exec.appendToConsole("\n  There are no interactive environments in the room.");
+            Exec.appendLnToConsole("There are no interactive environments in the room.");
         } else {
             for(IntrEnv intrEnv : this.roomIntrEnv){
-                Exec.appendToConsole("\n  " + intrEnv.getDescribableName() + " ");
+                Exec.appendLnToConsole(intrEnv.getDescribableName() + " ");
             }
         }
     }
@@ -209,10 +209,10 @@ public class Room {
 
     public void listRoomDoors() {
         if(this.roomDoors.isEmpty()){
-            Exec.appendToConsole("\n  There are no doors in the room.");
+            Exec.appendLnToConsole("There are no doors in the room.");
         } else {
             for(Door door : this.roomDoors){
-                Exec.appendToConsole("\n  " + door.getDescribableName() + " ");
+                Exec.appendLnToConsole(door.getDescribableName() + " ");
             }
         }
     }

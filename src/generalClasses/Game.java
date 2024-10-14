@@ -12,6 +12,14 @@ public class Game {
 
     private ArrayList<Room> gameRooms;
     private Room currentRoom;
+    public String [] roomDescriptions = {
+            "A dimly lit chamber. You can't make out any source of light but you see an old Rusty Door North of you.",
+            "A wooden paneled room. From floor to ceiling. It give you library or bar vibes, if it weren't so empty. There's an Ivory Door to your\n  West, a Wooden Door to your East and the Rusty Door to your South.",
+            "A room that appears to be quite empty. Just like a simple hallway. Or as if the architect ran out of ideas what to do with this room.\n  North is a Copper Door, to your West the Ivory Door.",
+            "A mysteriously flickering light. You can make out a Wardrobe to your West. The only door is the Copper Door you came from - South of\n  you.",
+            "Wow. A very bright room! The silver chandelier on the ceiling is illuminating the entire room. It dazzles you in the first moment.\n  There is a Wardrobe to your South. The Wooden Door is West and a Silver Door North.",
+            "From brightness to darkness. You see almost nothing. The only source of light comes from beneath the previous door. There appears to be a\n  Black Door North. The Silver Door is South."
+    };
 
     public Game () {
 
@@ -100,37 +108,37 @@ public class Game {
 
         //Room One (r1)- Dark Chamber
         String r1Name = "Dark Chamber";
-        String r1Description = "A dimly lit chamber. You can't make out any source of light but you see an old Rusty Door North of you.";
+        String r1Description = roomDescriptions[0];
         String r1ID = "r01";
         int r1Gold = 5;
 
         //Room Two (r2)- Wooden Chamber
         String r2Name = "Wooden Chamber";
-        String r2Description = "A wooden paneled room. From floor to ceiling. It give you library or bar vibes, if it weren't so empty. There are doors West, East and South of you.";
+        String r2Description = roomDescriptions[1];
         String r2ID = "r02";
         int r2Gold = 10;
 
         //Room Three (r3)- Copper Chamber
         String r3Name = "Hallway Chamber";
-        String r3Description = "A room that appears to be quite empty. Just like a simple hallway. Or as if the architect ran out of ideas what to do with this room. There are doors ro the North and East.";
+        String r3Description = roomDescriptions[2];
         String r3ID = "r03";
         int r3Gold = 0;
 
         //Room Four (r4)- Mystery Chamber
         String r4Name = "Mystery Chamber";
-        String r4Description = "A mysteriously flickering light. You can make out a Wardrobe to your West. The only door is the one you came from - South of you.";
+        String r4Description = roomDescriptions[3];
         String r4ID = "r04";
         int r4Gold = 15;
 
         //Room Five (r5)- Silver Chamber
         String r5Name = "Silver Chamber";
-        String r5Description = "Wow. A very bright room! The silver chandelier on the ceiling is illuminating the entire room. It even dazzles you in the first moment. There is a Wardrobe to you South. Doors are West and North of you.";
+        String r5Description = roomDescriptions[4];
         String r5ID = "r05";
         int r5Gold = 5;
 
         //Room Six (r6)- Black Chamber
         String r6Name = "Black Chamber";
-        String r6Description = "From brightness to darkness. You see almost nothing. The only source of light comes from beneath the previous door. There appears to be a door North and South of you.";
+        String r6Description = roomDescriptions[5];
         String r6ID = "r06";
         int r6Gold = 0;
 
@@ -213,7 +221,7 @@ public class Game {
 
         // Door 3 - Rusty Door - Connecting R3 and R4
         String d3Name = "Copper Door";
-        String d3Description = "A metalic door. Possibly made of copper.";
+        String d3Description = "A metallic door. Possibly made of copper.";
         String d3ID = "dr3r4";
         boolean d3Locked = true;
 
@@ -225,7 +233,7 @@ public class Game {
 
         // Door 5 - Silver Door - Connecting R5 and R6
         String d5Name = "Silver Door";
-        String d5Description = "A Silver door. You wonder what it must have been worth.";
+        String d5Description = "A Silver door. You wonder what it must have cost.";
         String d5ID = "dr5r6";
         boolean d5Locked = false;
 
