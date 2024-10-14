@@ -13,12 +13,12 @@ public class Game {
     private ArrayList<Room> gameRooms;
     private Room currentRoom;
     public String [] roomDescriptions = {
-            "A dimly lit chamber. You can't make out any source of light but you see an old Rusty Door North of you.",
-            "A wooden paneled room. From floor to ceiling. It give you library or bar vibes, if it weren't so empty. There's an Ivory Door to your\n  West, a Wooden Door to your East and the Rusty Door to your South.",
-            "A room that appears to be quite empty. Just like a simple hallway. Or as if the architect ran out of ideas what to do with this room.\n  North is a Copper Door, to your West the Ivory Door.",
-            "A mysteriously flickering light. You can make out a Wardrobe to your West. The only door is the Copper Door you came from - South of\n  you.",
-            "Wow. A very bright room! The silver chandelier on the ceiling is illuminating the entire room. It dazzles you in the first moment.\n  There is a Wardrobe to your South. The Wooden Door is West and a Silver Door North.",
-            "From brightness to darkness. You see almost nothing. The only source of light comes from beneath the previous door. There appears to be a\n  Black Door North. The Silver Door is South."
+            "  A dimly lit chamber. You can't make out any source of light but you see an old Rusty Door North of you.",
+            "  A wooden paneled room. From floor to ceiling. It give you library or bar vibes, if it weren't so empty. There's an Ivory Door to your\n  West, a Wooden Door to your East and the Rusty Door to your South.",
+            "  A room that appears to be quite empty. Just like a simple hallway. Or as if the architect ran out of ideas what to do with this room.\n  North is a Copper Door, to your West the Ivory Door.",
+            "  A mysteriously flickering light. You can make out a Mysterious Wardrobe to your West. The only door is the Copper Door you came from -\n  South of you.",
+            "  Wow. A very bright room! The silver chandelier on the ceiling is illuminating the entire room. It dazzles you in the first moment.\n  There is a Silver Wardrobe to your South. The Wooden Door is West and a Silver Door North.",
+            "  From brightness to darkness. You see almost nothing. The only source of light comes from beneath the previous door. There appears to be a\n  Black Door North. The Silver Door is South."
     };
 
     public Game () {
@@ -259,7 +259,7 @@ public class Game {
         // Wardrobes
 
         // Wardrobe 1
-        String w1Name = "Mystery Wardrobe";
+        String w1Name = "Mysterious Wardrobe";
         String w1Description = "Surprise.. a mysterious wardrobe... you can't identify it's material.";
         String w1ID = "w01";
         boolean w1Locked = false;

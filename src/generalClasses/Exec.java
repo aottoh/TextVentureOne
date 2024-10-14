@@ -34,12 +34,17 @@ public class Exec extends JFrame{
     private int commandStart = 0;     // Track where user can start typing
     private boolean isTyping = false;  // Track typing state
 
-    /*
-    JTextPane textPane = new JTextPane();
-    StyledDocument doc = textPane.getStyledDocument();
-    private Style normal = doc.addStyle("normal", null);
-    private Style bold = doc.addStyle("bold", normal);
-    */
+    private static Style createBoldStyle(StyledDocument doc) {
+        Style style = doc.addStyle("Bold", null);
+        StyleConstants.setBold(style, true);
+        return style;
+    }
+
+    private static Style createNormalStyle(StyledDocument doc) {
+        Style style = doc.addStyle("Normal", null);
+        return style;
+    }
+
 
     private static Color keyColor = new Color(255, 117, 0, 163); // Way to set my own colors!
     private static Color goldColor = new Color(255, 199, 0);
@@ -199,37 +204,47 @@ public class Exec extends JFrame{
     }
 
     public static void printDescriptionWithBoldDoors(StyledDocument doc, String description, Style bold, Style normal) {
-        // List of door types to bold
-        String[] boldWords = {"Rusty Door", "Ivory Door", "Wooden Door", "Copper Door", "Silver Door", "Black Door", "North", "East", "South", "West"};
-
+        String[] boldWords = {"Rusty Door", "Ivory Door", "Wooden Door", "Copper Door", "Silver Door", "Black Door", "Mysterious Wardrobe", "Silver Wardrobe"};
         try {
             int currentPos = 0;
+            while (currentPos < description.length()) {
+                int nextBoldPos = -1;
+                String nextBoldWord = null;
 
-            // Loop through the description, finding doors and applying styles
-            for (String boldWord : boldWords) {
-                int doorIndex = description.indexOf(boldWord, currentPos);
-                if (doorIndex != -1) {
-                    // Insert the text before the door in normal style
-                    doc.insertString(doc.getLength(), description.substring(currentPos, doorIndex), normal);
-                    // Insert the door in bold style
-                    doc.insertString(doc.getLength(), boldWord, bold);
-                    // Update current position
-                    currentPos = doorIndex + boldWord.length();
+                // Find the next occurrence of any bold word
+                for (String boldWord : boldWords) {
+                    int doorIndex = description.indexOf(boldWord, currentPos);
+                    if (doorIndex != -1 && (nextBoldPos == -1 || doorIndex < nextBoldPos)) {
+                        nextBoldPos = doorIndex;
+                        nextBoldWord = boldWord;
+                    }
                 }
+
+                // If no more bold words are found, append the remaining text and exit
+                if (nextBoldPos == -1) {
+                    doc.insertString(doc.getLength(), description.substring(currentPos), normal);
+                    break;
+                }
+
+                // Append the text before the next bold word
+                if (currentPos < nextBoldPos) {
+                    doc.insertString(doc.getLength(), description.substring(currentPos, nextBoldPos), normal);
+                }
+
+                // Append the bold word itself
+                doc.insertString(doc.getLength(), nextBoldWord, bold);
+
+                // Move the current position past the bold word
+                currentPos = nextBoldPos + nextBoldWord.length();
             }
 
-            // Insert any remaining text after the last door in normal style
-            if (currentPos < description.length()) {
-                doc.insertString(doc.getLength(), description.substring(currentPos), normal);
-            }
-
-            // Add a newline to separate descriptions
-            doc.insertString(doc.getLength(), "\n\n", normal);
-
+            // Add a new line at the end
+            //doc.insertString(doc.getLength(), "\n", normal);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
+
 
     //////////////////////
     // command handling //
@@ -284,12 +299,16 @@ public class Exec extends JFrame{
         appendLnToConsole("------------------------------");
     }
 
-    private static void handleDescribe(String command){
+    private static void handleDescribe(String command) {
         if (command.equals("describe")) {
             appendLnToConsole("What do you want to have described?", invalidColor);
         } else if (command.equals("describe room")) {
-            appendLnToConsole(game.getCurrentRoom().getRoomDescription());
-            //printDescriptionWithBoldDoors(doc, game.getCurrentRoom().getRoomDescription(), bold, normal);
+            appendLnToConsole();
+            Style bold = createBoldStyle(document);
+            Style normal = createNormalStyle(document);
+
+            // Use the method to print the room description with bolded door names
+            printDescriptionWithBoldDoors(document, game.getCurrentRoom().getRoomDescription(), bold, normal);
         } else {
             // Extract object name after "describe "
             String objectName = command.substring(9);  // Get substring after "describe "
@@ -465,27 +484,39 @@ public class Exec extends JFrame{
         }
     }
 
-    private static void handleEnter(String command){
+    private static void handleEnter(String command) {
         if (command.equals("enter")) {
             appendLnToConsole("What do you want to enter?", invalidColor);
         } else {
-            String enterDoorName = command.substring(6);  // Get substring after "unlock "
+            String enterDoorName = command.substring(6);  // Get substring after "enter "
             IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(enterDoorName);
-            if (intrEnv instanceof Door){
-                if (((Door) intrEnv).getLockIntrEnvLocked()){
+
+            if (intrEnv instanceof Door) {
+                if (((Door) intrEnv).getLockIntrEnvLocked()) {
                     appendLnToConsole(intrEnv.getIntrEnvName() + " is locked.");
                 } else {
-                    for (Room room : ((Door) intrEnv).getDoorRooms()){
-                        if (room != game.getCurrentRoom()){
+                    for (Room room : ((Door) intrEnv).getDoorRooms()) {
+                        if (room != game.getCurrentRoom()) {
                             game.changeCurrentRoom(room);
-                            if (Objects.equals(game.getCurrentRoom().getRoomID(), "exitRoom")){
+
+                            // Handle game completion if in exitRoom
+                            if (Objects.equals(game.getCurrentRoom().getRoomID(), "exitRoom")) {
                                 appendLnToConsole("Congratulations! You finished the game!");
                                 appendLnToConsole("You collected " + avatar.getAvGold() + " of 85 possible Gold.");
                                 running = false;
                                 break;
                             }
-                            appendLnToConsole("You entered " + room.getRoomName());
-                            appendLnToConsole(room.getRoomDescription());
+
+                            // Entering the room and describing it with bolded door names
+                            appendLnToConsole("You entered " + room.getRoomName() + "\n");
+
+                            // Define styles for bold and normal text
+                            Style bold = createBoldStyle(document);
+                            Style normal = createNormalStyle(document);
+
+                            // Print room description with bold doors
+                            printDescriptionWithBoldDoors(document, room.getRoomDescription(), bold, normal);
+
                             break;
                         }
                     }
