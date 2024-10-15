@@ -2,7 +2,11 @@ package inventoryItems;
 
 import generalInterfaces.Describable;
 
-public class Item implements Describable {
+import java.io.Serializable;
+
+public class Item implements Describable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     //Class attributes
     public String itemName;

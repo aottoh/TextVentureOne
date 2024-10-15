@@ -21,7 +21,8 @@ public class Exec extends JFrame{
 
     static Avatar avatar = new Avatar();
     static Game game = new Game();
-    static boolean running = true;
+    private static boolean awaitingDoorEnterConfirmation = false;
+    private static Door doorToEnter = null;
 
     ///////////////////////
     // Console Variables //
@@ -255,18 +256,24 @@ public class Exec extends JFrame{
         in the first help case.
         */
         appendLnToConsole();
-        switch (command.split(" ")[0]){
-            case "help" -> handleHelp(command);
-            case "describe" -> handleDescribe(command);
-            case "list" -> handleList(command);
-            case "take" -> handleTake(command);
-            case "drop" -> handleDrop(command);
-            case "inventory", "my" -> handleAvatar(command);
-            case "open" -> handleOpen(command);
-            case "unlock" -> handleUnlock(command);
-            case "enter" -> handleEnter(command);
-            case "quit" -> handleQuit(command);
-            default -> appendLnToConsole("No valid command found.");
+        if (awaitingDoorEnterConfirmation) {
+            handleDoorEnterConfirmation(command);
+        } else {
+            switch (command.split(" ")[0]){
+                case "help" -> handleHelp(command);
+                case "describe" -> handleDescribe(command);
+                case "list" -> handleList(command);
+                case "take" -> handleTake(command);
+                case "drop" -> handleDrop(command);
+                case "inventory", "my" -> handleAvatar(command);
+                case "open" -> handleOpen(command);
+                case "unlock" -> handleUnlock(command);
+                case "enter" -> handleEnter(command);
+                case "quit" -> handleQuit(command);
+                case "save" -> handleSave(command);
+                case "load" -> handleLoad(command);
+                default -> appendLnToConsole("No valid command found.");
+            }
         }
     }
 
@@ -447,35 +454,39 @@ public class Exec extends JFrame{
         }
     }
 
-    private static void handleUnlock(String command){
+    private static void handleUnlock(String command) {
         if (command.equals("unlock")) {
             appendLnToConsole("What are you trying to unlock...?", invalidColor);
         } else {
             String unlockObjectName = command.substring(7);  // Get substring after "unlock "
             IntrEnv intrEnv = game.getCurrentRoom().findIntrEnvByName(unlockObjectName);
-            String requiredKeyID;
             if (intrEnv instanceof LockIntrEnv) {
-                if (!((LockIntrEnv) intrEnv).getLockIntrEnvLocked()) {
-                    appendLnToConsole(intrEnv.getIntrEnvName() + " is already unlocked");
+                LockIntrEnv lockIntrEnv = (LockIntrEnv) intrEnv;
+                if (!lockIntrEnv.getLockIntrEnvLocked()) {
+                    appendLnToConsole(intrEnv.getIntrEnvName() + " is already unlocked.");
                 } else {
-                    requiredKeyID = ((LockIntrEnv) intrEnv).getLockIntrEnvKeyID();
-                    if (avatar.getAvInventory() == null) {
-                        appendLnToConsole("You don't have any keys.");
-                    } else {
-                        boolean foundKey = false;  // Flag to track if the key is found and used
-                        for (Item item : avatar.getAvInventory()) {
-                            if (item instanceof Key) {
-                                if (item.getItemID().equals(requiredKeyID)) {
-                                    ((LockIntrEnv) intrEnv).unlockLockIntrEnv();
-                                    appendLnToConsole(intrEnv.getIntrEnvName() + " unlocked.");
-                                    foundKey = true;  // Set flag to true if the correct key is found
-                                    break;  // Exit the loop once the object is unlocked
-                                }
+                    String requiredKeyID = lockIntrEnv.getLockIntrEnvKeyID();
+                    boolean foundKey = false;
+                    for (Item item : avatar.getAvInventory()) {
+                        if (item instanceof Key && item.getItemID().equals(requiredKeyID)) {
+                            lockIntrEnv.unlockLockIntrEnv();
+                            foundKey = true;
+                            String keyName = item.getDescribableName();  // Get the key's name
+
+                            // Print that the specific door was unlocked with a specific key
+                            appendLnToConsole(intrEnv.getIntrEnvName() + " unlocked using " + keyName + ".");
+
+                            // If it's a door, ask if the user wants to enter
+                            if (intrEnv instanceof Door) {
+                                doorToEnter = (Door) intrEnv;  // Store the door reference
+                                awaitingDoorEnterConfirmation = true;  // Set flag for next input
+                                appendLnToConsole("Do you want to enter the " + intrEnv.getIntrEnvName() + "? (yes/no)");
                             }
+                            break;  // Exit the loop after unlocking
                         }
-                        if (!foundKey) {
-                            appendLnToConsole("You don't have the correct key.");
-                        }
+                    }
+                    if (!foundKey) {
+                        appendLnToConsole("You don't have the correct key.");
                     }
                 }
             } else {
@@ -503,7 +514,6 @@ public class Exec extends JFrame{
                             if (Objects.equals(game.getCurrentRoom().getRoomID(), "exitRoom")) {
                                 appendLnToConsole("Congratulations! You finished the game!");
                                 appendLnToConsole("You collected " + avatar.getAvGold() + " of 85 possible Gold.");
-                                running = false;
                                 break;
                             }
 
@@ -529,14 +539,46 @@ public class Exec extends JFrame{
         }
     }
 
+    private static void handleSave(String command) {
+        SaveGame.saveGame(game, avatar, "savefile.dat");  // Save the entire game and avatar
+        appendLnToConsole("Game saved successfully.", Color.BLACK, true, false);
+    }
+
+    private static void handleLoad(String command) {
+        Game loadedGame = LoadGame.loadGame("savefile.dat");  // Load the entire game
+        if (loadedGame != null) {
+            game = loadedGame; // Update the local game reference with the loaded one
+            avatar = game.getAvatar(); // Retrieve the avatar from the loaded game
+            appendLnToConsole("Game loaded successfully.", Color.BLACK, true, false);
+        } else {
+            appendLnToConsole("Failed to load game.", Color.RED, true, false);
+        }
+    }
+
     private static void handleQuit(String command){
         if (command.equals("quit")) {
             appendLnToConsole("Please enter \"quit game\" to quit the game");
         } else {
-            running = false;
             System.exit(0);
         }
     }
+
+    private static void handleDoorEnterConfirmation(String command) {
+        if (command.equalsIgnoreCase("yes")) {
+            if (doorToEnter != null) {
+                handleEnter("enter " + doorToEnter.getIntrEnvName());
+            }
+        } else if (command.equalsIgnoreCase("no")) {
+            appendLnToConsole("You chose not to enter the " + doorToEnter.getIntrEnvName() + ".");
+        } else {
+            appendLnToConsole("Please answer 'yes' or 'no'.");
+            return; // Don't reset flags if invalid input is given
+        }
+        // Reset the state after the decision
+        awaitingDoorEnterConfirmation = false;
+        doorToEnter = null;
+    }
+
 
 
     //////////

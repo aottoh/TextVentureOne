@@ -2,7 +2,9 @@ package interactiveEnvrionments;
 
 import generalInterfaces.Describable;
 
-public class IntrEnv implements Describable {
+import java.io.Serializable;
+
+public class IntrEnv implements Describable, Serializable {
 
     String intrEnvName;
     String intrEnvDescription;

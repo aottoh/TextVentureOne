@@ -1,5 +1,6 @@
 package ventureRooms;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import generalClasses.Door;
@@ -8,7 +9,7 @@ import inventoryItems.Item;
 import interactiveEnvrionments.IntrEnv;
 import generalClasses.Exec;
 
-public class Room {
+public class Room implements Serializable {
     String roomName;
     String roomDescription;
     String roomID;

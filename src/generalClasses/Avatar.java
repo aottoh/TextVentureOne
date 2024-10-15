@@ -1,9 +1,11 @@
 package generalClasses;
 import inventoryItems.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Avatar {
+public class Avatar implements Serializable {
+    private static final long serialVersionUID = 1L;
     String avName;
     int avGold;
     ArrayList<Item> avInventory;

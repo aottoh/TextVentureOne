@@ -6,10 +6,12 @@ import inventoryItems.Item;
 import inventoryItems.Key;
 import ventureRooms.Room;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
 
+    private Avatar avatar;
     private ArrayList<Room> gameRooms;
     private Room currentRoom;
     public String [] roomDescriptions = {
@@ -24,6 +26,14 @@ public class Game {
     public Game () {
 
         instantiateGameObjects();
+    }
+
+    /////////////
+    // Getters //
+    /////////////
+
+    public Avatar getAvatar(){
+        return this.avatar;
     }
 
     public Room getCurrentRoom() {
@@ -42,6 +52,15 @@ public class Game {
             }
         }
         return null; // Return null if no room with the given name is found
+    }
+
+
+    /////////////
+    // Setters //
+    /////////////
+
+    public void setAvatar(Avatar avatar){
+        this.avatar = avatar;
     }
 
     public void changeCurrentRoom(Room nextRoom){
@@ -100,6 +119,8 @@ public class Game {
     }
 
     public void instantiateGameObjects() {
+
+        avatar = new Avatar();
 
         /////////////////////////
         // DEFINING GAME ROOMS //
